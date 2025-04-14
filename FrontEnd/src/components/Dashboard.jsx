@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { BarChart3, Shield, AlertTriangle, Search } from 'lucide-react';
+import Navigation from './Navigation';
 
-const Dashboard = () => {
-  const [darkMode, setDarkMode] = useState(false);
-
+const Dashboard = ({ darkMode, setDarkMode, isAuthenticated, user, onLogout }) => {
   const stats = [
     { name: 'Total IOCs', value: '10,234', icon: <Shield className="h-6 w-6" /> },
     { name: 'Active Threats', value: '156', icon: <AlertTriangle className="h-6 w-6" /> },
@@ -12,6 +11,13 @@ const Dashboard = () => {
 
   return (
     <div className={`min-h-screen ${darkMode ? 'dark bg-gray-900' : 'bg-gray-50'}`}>
+      <Navigation 
+        darkMode={darkMode} 
+        setDarkMode={setDarkMode}
+        isAuthenticated={isAuthenticated}
+        user={user}
+        onLogout={onLogout}
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
         

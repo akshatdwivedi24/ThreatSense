@@ -4,6 +4,7 @@ import HomePage from './components/HomePage'
 import Dashboard from './components/Dashboard'
 import SignIn from './components/SignIn'
 import SignUp from './components/SignUp'
+import Features from './components/Features'
 import './App.css'
 
 function App() {
@@ -69,6 +70,16 @@ function App() {
         path="/signup" 
         element={
           <SignUp />
+        } 
+      />
+      <Route 
+        path="/features" 
+        element={
+          <Features 
+            isAuthenticated={isAuthenticated}
+            user={user}
+            onLogout={handleLogout}
+          />
         } 
       />
     </Routes>

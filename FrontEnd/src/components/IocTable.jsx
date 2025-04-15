@@ -19,7 +19,7 @@ import { Badge } from "../components/ui/badge";
 import { AlertTriangle, Globe, FileText, ArrowUpDown, Eye, Shield, Flag } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const IocTable = forwardRef((props, ref) => {
+const IocTable = forwardRef(({ onRowClick }, ref) => {
   const [iocs, setIocs] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
@@ -30,6 +30,9 @@ const IocTable = forwardRef((props, ref) => {
   const [selectedIocs, setSelectedIocs] = useState([]);
   const [page, setPage] = useState(1);
   const [itemsPerPage] = useState(10);
+  const [totalIocs, setTotalIocs] = useState(0);
+  const [sortField, setSortField] = useState('timestamp');
+  const [sortOrder, setSortOrder] = useState('desc');
 
   useEffect(() => {
     const fetchIocs = async () => {
@@ -177,7 +180,20 @@ const IocTable = forwardRef((props, ref) => {
 
   // Expose the export function to parent component
   useImperativeHandle(ref, () => ({
-    exportToCSV
+    exportToCSV,
+    getIOCData: () => iocs,
+    getCSVData: () => {
+      return iocs.map(ioc => ({
+        'IOC ID': ioc.id,
+        'Type': ioc.type,
+        'Value': ioc.value,
+        'Source': ioc.source,
+        'Severity': ioc.severity,
+        'Status': ioc.status,
+        'Timestamp': new Date(ioc.timestamp).toLocaleString(),
+        'Description': ioc.description
+      }));
+    }
   }));
 
   if (loading) {

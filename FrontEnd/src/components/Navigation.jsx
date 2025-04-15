@@ -49,10 +49,22 @@ const Navigation = ({ isAuthenticated, user, onLogout }) => {
 
             {/* Desktop navigation */}
             <div className="hidden md:flex items-center space-x-8">
-              <NavLink href="/features">Features</NavLink>
-              <NavLink href="/pricing">Pricing</NavLink>
-              <NavLink href="/about">About</NavLink>
-              <NavLink href="/contact">Contact</NavLink>
+              {isAuthenticated ? (
+                <>
+                  <NavLink href="/dashboard">Dashboard</NavLink>
+                  <NavLink href="/features">Features</NavLink>
+                  <NavLink href="/pricing">Pricing</NavLink>
+                  <NavLink href="/about">About</NavLink>
+                  <NavLink href="/contact">Contact</NavLink>
+                </>
+              ) : (
+                <>
+                  <NavLink href="/features">Features</NavLink>
+                  <NavLink href="/pricing">Pricing</NavLink>
+                  <NavLink href="/about">About</NavLink>
+                  <NavLink href="/contact">Contact</NavLink>
+                </>
+              )}
 
               {/* Auth buttons */}
               {isAuthenticated ? (
@@ -81,17 +93,10 @@ const Navigation = ({ isAuthenticated, user, onLogout }) => {
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="relative px-4 py-2 rounded-lg text-indigo-400 hover:text-indigo-300 font-medium transition-colors"
-                  >
-                    <Link to="/signin">Sign In</Link>
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
                     className="relative px-4 py-2 rounded-lg bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition-colors"
                   >
                     <div className="absolute inset-0 bg-indigo-500/20 rounded-lg blur-sm" />
-                    <Link to="/signup" className="relative z-10">Sign Up</Link>
+                    <Link to="/signin" className="relative z-10">Sign In</Link>
                   </motion.button>
                 </div>
               )}
@@ -123,6 +128,9 @@ const Navigation = ({ isAuthenticated, user, onLogout }) => {
               className="md:hidden bg-background/95 backdrop-blur-lg border-t border-gray-800"
             >
               <div className="px-4 pt-2 pb-3 space-y-1">
+                {isAuthenticated && (
+                  <MobileNavLink href="/dashboard">Dashboard</MobileNavLink>
+                )}
                 <MobileNavLink href="/features">Features</MobileNavLink>
                 <MobileNavLink href="/pricing">Pricing</MobileNavLink>
                 <MobileNavLink href="/about">About</MobileNavLink>
@@ -143,17 +151,9 @@ const Navigation = ({ isAuthenticated, user, onLogout }) => {
                     <Link to="/signin">
                       <motion.button
                         whileTap={{ scale: 0.95 }}
-                        className="w-full px-4 py-2 rounded-lg text-indigo-400 hover:text-indigo-300 font-medium transition-colors"
-                      >
-                        Sign In
-                      </motion.button>
-                    </Link>
-                    <Link to="/signup">
-                      <motion.button
-                        whileTap={{ scale: 0.95 }}
                         className="w-full px-4 py-2 rounded-lg bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition-colors"
                       >
-                        Sign Up
+                        Sign In
                       </motion.button>
                     </Link>
                   </div>

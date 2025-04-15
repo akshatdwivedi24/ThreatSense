@@ -256,41 +256,250 @@ const HomePage = ({ darkMode, setDarkMode, isAuthenticated, user, onLogout }) =>
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
             >
-              <motion.h1 
-                className="text-4xl md:text-5xl lg:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-blue-600 text-glow"
+              <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.2, duration: 0.8 }}
+                transition={{ duration: 1 }}
+                className="relative"
               >
-                Advanced Threat Intelligence Platform
-              </motion.h1>
+                <motion.h1 
+                  className="text-4xl md:text-5xl lg:text-6xl font-bold relative z-10"
+                >
+                  <div className="relative overflow-hidden">
+                    <motion.div
+                      className="bg-gradient-to-r from-indigo-600 via-purple-500 to-blue-500 bg-clip-text text-transparent relative z-10 flex flex-wrap gap-2 justify-center lg:justify-start"
+                      initial={{ y: 100, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{
+                        duration: 0.8,
+                        ease: [0.2, 0.65, 0.3, 0.9],
+                      }}
+                    >
+                      <div className="flex flex-wrap gap-2">
+                        <span className="text-5xl md:text-6xl lg:text-7xl font-bold">Advanced</span>
+                        <span className="text-5xl md:text-6xl lg:text-7xl font-bold">Threat</span>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        <span className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-normal">Intelligence</span>
+                        <span className="text-5xl md:text-6xl lg:text-7xl font-bold">Platform</span>
+                      </div>
+
+                      {/* Animated gradient overlay */}
+                      <motion.div
+                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                        animate={{
+                          x: ['-100%', '100%'],
+                        }}
+                        transition={{
+                          duration: 2,
+                          repeat: Infinity,
+                          ease: 'linear',
+                          repeatDelay: 0.5,
+                        }}
+                        style={{ mixBlendMode: 'overlay' }}
+                      />
+                    </motion.div>
+
+                    {/* Glowing line */}
+                    <motion.div
+                      className="absolute bottom-0 left-0 right-0 h-[1px]"
+                      style={{
+                        background: 'linear-gradient(90deg, transparent, rgba(99,102,241,0.5), transparent)',
+                      }}
+                      animate={{
+                        scaleX: [0, 1, 1, 0],
+                        opacity: [0, 1, 1, 0],
+                      }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: 'easeInOut',
+                        times: [0, 0.4, 0.6, 1],
+                      }}
+                    />
+
+                    {/* Cyber dots */}
+                    <div className="absolute -inset-x-4 -inset-y-4 -z-10">
+                      {[...Array(15)].map((_, i) => (
+                        <motion.div
+                          key={i}
+                          className="absolute w-1 h-1 bg-indigo-500/30 rounded-full"
+                          style={{
+                            left: `${Math.random() * 100}%`,
+                            top: `${Math.random() * 100}%`,
+                          }}
+                          animate={{
+                            opacity: [0, 0.5, 0],
+                            scale: [0, 1, 0],
+                          }}
+                          transition={{
+                            duration: 2,
+                            repeat: Infinity,
+                            delay: Math.random() * 2,
+                            ease: 'easeInOut',
+                          }}
+                        />
+                      ))}
+                    </div>
+
+                    {/* Cyber grid */}
+                    <div 
+                      className="absolute inset-0 -z-20"
+                      style={{
+                        backgroundImage: `
+                          linear-gradient(to right, rgba(99,102,241,0.1) 1px, transparent 1px),
+                          linear-gradient(to bottom, rgba(99,102,241,0.1) 1px, transparent 1px)
+                        `,
+                        backgroundSize: '20px 20px',
+                      }}
+                    />
+                  </div>
+                </motion.h1>
+
+                {/* Enhanced floating particles */}
+                <motion.div className="absolute inset-0 -z-10">
+                  {[...Array(20)].map((_, i) => (
+                    <motion.div
+                      key={i}
+                      className="absolute w-1 h-1 bg-indigo-500/30 rounded-full"
+                      style={{
+                        left: `${Math.random() * 100}%`,
+                        top: `${Math.random() * 100}%`,
+                      }}
+                      animate={{
+                        y: [0, -20, 0],
+                        opacity: [0.2, 0.5, 0.2],
+                        scale: [1, 1.5, 1],
+                      }}
+                      transition={{
+                        duration: 2 + Math.random() * 2,
+                        repeat: Infinity,
+                        delay: Math.random() * 2,
+                        ease: "easeInOut",
+                      }}
+                    />
+                  ))}
+                </motion.div>
+              </motion.div>
+
               <motion.p 
-                className="mt-6 text-lg md:text-xl text-gray-300 max-w-2xl mx-auto lg:mx-0"
+                className="mt-6 text-lg md:text-xl text-gray-300 max-w-2xl mx-auto lg:mx-0 relative"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.4, duration: 0.8 }}
+                transition={{ duration: 1 }}
               >
-                ThreatSense provides comprehensive threat intelligence and analysis tools to help security teams identify, analyze, and respond to emerging threats in real-time.
+                <motion.span
+                  className="text-indigo-400 font-semibold inline-block"
+                  animate={{
+                    color: ["#818cf8", "#a78bfa", "#818cf8"],
+                  }}
+                  transition={{
+                    duration: 4,
+                    repeat: Infinity,
+                    ease: "linear"
+                  }}
+                >
+                  ThreatSense
+                </motion.span>{" "}
+                provides comprehensive threat intelligence and analysis tools to help security teams{" "}
+                <motion.span
+                  className="text-purple-400 font-semibold inline-block"
+                  animate={{
+                    scale: [1, 1.1, 1],
+                    opacity: [0.7, 1, 0.7],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                >
+                  identify
+                </motion.span>
+                ,{" "}
+                <motion.span
+                  className="text-blue-400 font-semibold inline-block"
+                  animate={{
+                    scale: [1, 1.1, 1],
+                    opacity: [0.7, 1, 0.7],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 0.5
+                  }}
+                >
+                  analyze
+                </motion.span>
+                , and{" "}
+                <motion.span
+                  className="text-indigo-400 font-semibold inline-block"
+                  animate={{
+                    scale: [1, 1.1, 1],
+                    opacity: [0.7, 1, 0.7],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 1
+                  }}
+                >
+                  respond
+                </motion.span>{" "}
+                to emerging threats in real-time.
               </motion.p>
+
               <motion.div 
                 className="mt-8 flex flex-wrap gap-4 justify-center lg:justify-start"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.6, duration: 0.8 }}
+                transition={{ duration: 1 }}
               >
                 <motion.button 
-                  className="px-8 py-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold transition-all transform hover:scale-105"
-                  whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(99, 102, 241, 0.5)" }}
+                  className="relative px-8 py-3 rounded-lg bg-indigo-600 text-white font-semibold transition-all transform hover:scale-105 group overflow-hidden"
+                  whileHover={{ 
+                    scale: 1.05,
+                    boxShadow: "0 0 20px rgba(99, 102, 241, 0.5)"
+                  }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  Get Started
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600"
+                    animate={{
+                      x: ["-100%", "100%"],
+                    }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      ease: "linear",
+                    }}
+                  />
+                  <span className="relative z-10">Get Started</span>
                 </motion.button>
+
                 <motion.button 
-                  className="px-8 py-3 rounded-lg border border-indigo-600 text-indigo-600 hover:bg-indigo-600/10 font-semibold transition-all transform hover:scale-105"
-                  whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(99, 102, 241, 0.3)" }}
+                  className="relative px-8 py-3 rounded-lg border border-indigo-600 text-indigo-400 font-semibold transition-all transform hover:scale-105 group overflow-hidden"
+                  whileHover={{ 
+                    scale: 1.05,
+                    boxShadow: "0 0 20px rgba(99, 102, 241, 0.3)"
+                  }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  Learn More
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-indigo-600/20 to-purple-600/20"
+                    animate={{
+                      x: ["-100%", "100%"],
+                    }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      ease: "linear",
+                      delay: 1.5
+                    }}
+                  />
+                  <span className="relative z-10 group-hover:text-white transition-colors duration-300">Learn More</span>
                 </motion.button>
               </motion.div>
             </motion.div>
@@ -418,33 +627,63 @@ const HomePage = ({ darkMode, setDarkMode, isAuthenticated, user, onLogout }) =>
       </div>
 
       {/* Features Section */}
-      <div id="features" className="py-12 bg-gray-50 dark:bg-gray-900">
+      <div id="features" className="py-24 bg-gradient-to-b from-gray-900 to-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="lg:text-center">
-            <h2 className="text-base text-indigo-600 dark:text-indigo-400 font-semibold tracking-wide uppercase">Features</h2>
-            <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
-              Everything you need to stay secure
-            </p>
-            <p className="mt-4 max-w-2xl text-xl text-gray-500 dark:text-gray-300 lg:mx-auto">
-              Our platform provides comprehensive threat intelligence and analysis tools to protect your organization.
-            </p>
-          </div>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <h2 className="text-base text-indigo-400 font-semibold tracking-wide uppercase">Features</h2>
+              <p className="mt-2 text-4xl font-extrabold text-white">
+                Advanced Security Tools
+              </p>
+              <div className="mt-4 max-w-2xl mx-auto">
+                <p className="text-xl text-gray-300">
+                  Comprehensive threat intelligence and analysis tools to protect your organization
+                </p>
+              </div>
+            </motion.div>
+          </motion.div>
 
-          <div className="mt-10">
-            <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-20">
+            <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-3">
               {features.map((feature, index) => (
-                <div key={index} className="relative group">
-                  <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg blur opacity-25 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
-                  <div className="relative bg-white dark:bg-gray-800 rounded-lg p-6 h-full">
-                    <div className="flex items-center justify-center h-12 w-12 rounded-md bg-indigo-500 text-white">
-                      {feature.icon}
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  className="relative group"
+                >
+                  <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl blur opacity-20 group-hover:opacity-75 transition duration-500"></div>
+                  <div className="relative flex flex-col h-full bg-gray-800/50 backdrop-blur-sm rounded-xl p-8 hover:transform hover:scale-[1.02] transition-all duration-300">
+                    <div className="flex items-center">
+                      <div className="flex items-center justify-center h-12 w-12 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/30">
+                        {feature.icon}
+                      </div>
+                      <h3 className="ml-4 text-xl font-semibold text-white group-hover:text-indigo-400 transition-colors duration-300">
+                        {feature.title}
+                      </h3>
                     </div>
-                    <h3 className="mt-4 text-lg leading-6 font-medium text-gray-900 dark:text-white">{feature.title}</h3>
-                    <p className="mt-2 text-base text-gray-500 dark:text-gray-300">
+                    <p className="mt-4 text-gray-300 leading-relaxed">
                       {feature.description}
                     </p>
+                    <div className="mt-6 flex items-center text-indigo-400 group-hover:text-indigo-300 transition-colors duration-300">
+                      <span className="text-sm font-medium">Learn more</span>
+                      <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    </div>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>

@@ -7,7 +7,6 @@ import SignUp from './components/SignUp'
 import './App.css'
 
 function App() {
-  const [darkMode, setDarkMode] = useState(false)
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     const savedAuth = localStorage.getItem('isAuthenticated');
     return savedAuth ? JSON.parse(savedAuth) : false;
@@ -18,6 +17,8 @@ function App() {
   });
 
   useEffect(() => {
+    // Force dark mode
+    document.documentElement.classList.add('dark');
     localStorage.setItem('isAuthenticated', JSON.stringify(isAuthenticated));
     localStorage.setItem('user', JSON.stringify(user));
   }, [isAuthenticated, user]);
@@ -40,8 +41,6 @@ function App() {
         path="/" 
         element={
           <HomePage 
-            darkMode={darkMode} 
-            setDarkMode={setDarkMode}
             isAuthenticated={isAuthenticated}
             user={user}
             onLogout={handleLogout}
@@ -52,8 +51,6 @@ function App() {
         path="/dashboard" 
         element={
           <Dashboard 
-            darkMode={darkMode} 
-            setDarkMode={setDarkMode}
             isAuthenticated={isAuthenticated}
             user={user}
             onLogout={handleLogout}
@@ -64,8 +61,6 @@ function App() {
         path="/signin" 
         element={
           <SignIn 
-            darkMode={darkMode} 
-            setDarkMode={setDarkMode}
             onLogin={handleLogin}
           />
         } 

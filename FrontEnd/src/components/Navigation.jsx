@@ -1,257 +1,189 @@
 import { useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, Sun, Moon, Shield, LogIn, UserPlus, LogOut, User } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Shield, Menu, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
-const Navigation = ({ darkMode, setDarkMode, isAuthenticated, user, onLogout }) => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const location = useLocation();
-  const navigate = useNavigate();
+const Navigation = ({ isAuthenticated, user, onLogout }) => {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      const isScrolled = window.scrollY > 10;
-      setScrolled(isScrolled);
+      setIsScrolled(window.scrollY > 0);
     };
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navigation = [
-    { name: 'Dashboard', href: '/dashboard' },
-    { name: 'IOC Search', href: '/search' },
-    { name: 'Upload', href: '/upload' },
-    { name: 'Analytics', href: '/analytics' },
-  ];
-
-  const isActive = (path) => location.pathname === path;
-
-  const handleLogout = () => {
-    onLogout();
-    navigate('/');
-  };
-
   return (
-    <nav 
-      className={`fixed w-full top-0 z-50 transition-all duration-300 ${
-        scrolled 
-          ? 'bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg shadow-lg' 
-          : 'bg-white dark:bg-gray-800'
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
-        <div className="flex justify-between h-14 sm:h-16">
-          <div className="flex flex-1">
-            <div className="flex-shrink-0 flex items-center">
-              <Link 
-                to="/" 
-                className="flex items-center space-x-1.5 sm:space-x-2 text-lg sm:text-xl lg:text-2xl font-bold text-indigo-600 dark:text-indigo-400 hover:scale-105 transition-transform duration-200"
-              >
-                <Shield className="h-5 w-5 sm:h-6 sm:w-6 lg:h-8 lg:w-8" />
-                <span className="bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 text-transparent bg-clip-text">
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      isScrolled ? 'bg-background/90 backdrop-blur-lg shadow-lg' : 'bg-background/80 backdrop-blur-md'
+    }`}>
+      <div className="relative">
+        {/* Animated border gradient */}
+        <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent" />
+        
+        {/* Glow effect */}
+        <div className="absolute inset-0 bg-gradient-to-b from-indigo-500/5 to-transparent pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo section */}
+            <motion.div 
+              className="flex-shrink-0"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              <Link to="/" className="flex items-center space-x-2 group">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-indigo-500/20 rounded-full blur-md transform group-hover:scale-110 transition-transform duration-300" />
+                  <Shield className="h-8 w-8 text-indigo-500 relative z-10" />
+                </div>
+                <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-500">
                   ThreatSense
                 </span>
               </Link>
-            </div>
-            {isAuthenticated && (
-              <div className="hidden sm:ml-4 lg:ml-8 sm:flex sm:space-x-3 lg:space-x-6">
-                {navigation.map((item) => (
-                  <Link
-                    key={item.name}
-                    to={item.href}
-                    className={`${
-                      isActive(item.href)
-                        ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400'
-                        : 'border-transparent text-gray-500 dark:text-gray-300 hover:border-gray-300 hover:text-gray-700 dark:hover:text-white'
-                    } transition-all duration-200 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium hover:scale-105`}
-                  >
-                    {item.name}
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
-          <div className="hidden sm:ml-4 sm:flex sm:items-center sm:space-x-2 lg:space-x-4">
-            {isAuthenticated ? (
-              <>
-                {/* User Profile */}
-                <div className="flex items-center space-x-2 lg:space-x-3">
+            </motion.div>
+
+            {/* Desktop navigation */}
+            <div className="hidden md:flex items-center space-x-8">
+              <NavLink href="/features">Features</NavLink>
+              <NavLink href="/pricing">Pricing</NavLink>
+              <NavLink href="/about">About</NavLink>
+              <NavLink href="/contact">Contact</NavLink>
+
+              {/* Auth buttons */}
+              {isAuthenticated ? (
+                <div className="flex items-center space-x-4">
                   {user?.picture ? (
-                    <img
-                      src={user.picture}
-                      alt={user.name}
-                      className="h-7 w-7 lg:h-8 lg:w-8 rounded-full"
-                    />
+                    <img src={user.picture} alt="Profile" className="w-8 h-8 rounded-full" />
                   ) : (
-                    <div className="h-7 w-7 lg:h-8 lg:w-8 rounded-full bg-indigo-600 flex items-center justify-center">
-                      <span className="text-white text-sm font-medium">
-                        {user?.name?.charAt(0)}
+                    <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center">
+                      <span className="text-sm font-medium text-white">
+                        {user?.name?.charAt(0) || 'U'}
                       </span>
                     </div>
                   )}
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-200 hidden lg:inline">
-                    {user?.name}
-                  </span>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={onLogout}
+                    className="relative px-4 py-2 rounded-lg bg-red-600 text-white font-medium hover:bg-red-700 transition-colors"
+                  >
+                    <div className="absolute inset-0 bg-red-500/20 rounded-lg blur-sm" />
+                    <span className="relative z-10">Logout</span>
+                  </motion.button>
                 </div>
-
-                {/* Logout Button */}
-                <button
-                  onClick={handleLogout}
-                  className="inline-flex items-center px-2 lg:px-3 py-1.5 text-sm font-medium text-gray-500 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:scale-105 transition-all duration-200"
-                >
-                  <LogOut className="h-4 w-4 lg:h-5 lg:w-5 mr-1.5" />
-                  <span className="hidden md:inline">Logout</span>
-                </button>
-              </>
-            ) : (
-              <>
-                {/* Sign In Button */}
-                <Link
-                  to="/signin"
-                  className="inline-flex items-center px-2 lg:px-3 py-1.5 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg shadow-sm hover:shadow-indigo-500/20 hover:scale-105 transition-all duration-200"
-                >
-                  <LogIn className="h-4 w-4 lg:h-5 lg:w-5 mr-1.5" />
-                  <span className="hidden md:inline">Sign In</span>
-                </Link>
-              </>
-            )}
-
-            {/* Dark Mode Toggle */}
-            <button
-              onClick={() => setDarkMode(!darkMode)}
-              className="p-1.5 rounded-lg text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 hover:scale-105"
-              aria-label="Toggle dark mode"
-            >
-              {darkMode ? (
-                <Sun className="h-5 w-5 lg:h-6 lg:w-6 hover:rotate-45 transition-transform duration-300" />
               ) : (
-                <Moon className="h-5 w-5 lg:h-6 lg:w-6 hover:-rotate-45 transition-transform duration-300" />
+                <div className="flex items-center space-x-4">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="relative px-4 py-2 rounded-lg text-indigo-400 hover:text-indigo-300 font-medium transition-colors"
+                  >
+                    <Link to="/signin">Sign In</Link>
+                  </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="relative px-4 py-2 rounded-lg bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition-colors"
+                  >
+                    <div className="absolute inset-0 bg-indigo-500/20 rounded-lg blur-sm" />
+                    <Link to="/signup" className="relative z-10">Sign Up</Link>
+                  </motion.button>
+                </div>
               )}
-            </button>
-          </div>
-          <div className="flex items-center sm:hidden">
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="inline-flex items-center justify-center p-1.5 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 transition-all duration-200"
+            </div>
+
+            {/* Mobile menu button */}
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="md:hidden relative p-2 rounded-lg hover:bg-gray-800 transition-colors"
             >
-              <span className="sr-only">Open main menu</span>
-              {mobileMenuOpen ? (
-                <X className="block h-5 w-5" />
+              <div className="absolute inset-0 bg-indigo-500/20 rounded-lg blur-sm" />
+              {isMobileMenuOpen ? (
+                <X className="h-6 w-6 text-indigo-400" />
               ) : (
-                <Menu className="block h-5 w-5" />
+                <Menu className="h-6 w-6 text-indigo-400" />
               )}
-            </button>
+            </motion.button>
           </div>
         </div>
-      </div>
 
-      {/* Mobile menu */}
-      <div 
-        className={`sm:hidden transition-all duration-300 ease-in-out ${
-          mobileMenuOpen ? 'max-h-[calc(100vh-4rem)] opacity-100' : 'max-h-0 opacity-0'
-        } overflow-hidden bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700`}
-      >
-        <div className="pt-2 pb-3 space-y-1 px-3">
-          {isAuthenticated && navigation.map((item) => (
-            <Link
-              key={item.name}
-              to={item.href}
-              className={`${
-                isActive(item.href)
-                  ? 'bg-indigo-50 dark:bg-indigo-900/50 border-indigo-500 text-indigo-600 dark:text-indigo-400'
-                  : 'border-transparent text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
-              } block pl-3 pr-4 py-2.5 border-l-4 text-base font-medium transition-all duration-200`}
-              onClick={() => setMobileMenuOpen(false)}
+        {/* Mobile menu */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="md:hidden bg-background/95 backdrop-blur-lg border-t border-gray-800"
             >
-              {item.name}
-            </Link>
-          ))}
-          
-          {isAuthenticated ? (
-            <>
-              {/* Mobile User Profile */}
-              <div className="flex items-center space-x-3 px-3 py-2.5">
-                {user?.picture ? (
-                  <img
-                    src={user.picture}
-                    alt={user.name}
-                    className="h-8 w-8 rounded-full"
-                  />
+              <div className="px-4 pt-2 pb-3 space-y-1">
+                <MobileNavLink href="/features">Features</MobileNavLink>
+                <MobileNavLink href="/pricing">Pricing</MobileNavLink>
+                <MobileNavLink href="/about">About</MobileNavLink>
+                <MobileNavLink href="/contact">Contact</MobileNavLink>
+                
+                {isAuthenticated ? (
+                  <div className="pt-4 flex flex-col space-y-2">
+                    <motion.button
+                      whileTap={{ scale: 0.95 }}
+                      onClick={onLogout}
+                      className="w-full px-4 py-2 rounded-lg bg-red-600 text-white font-medium hover:bg-red-700 transition-colors"
+                    >
+                      Logout
+                    </motion.button>
+                  </div>
                 ) : (
-                  <div className="h-8 w-8 rounded-full bg-indigo-600 flex items-center justify-center">
-                    <span className="text-white text-sm font-medium">
-                      {user?.name?.charAt(0)}
-                    </span>
+                  <div className="pt-4 flex flex-col space-y-2">
+                    <Link to="/signin">
+                      <motion.button
+                        whileTap={{ scale: 0.95 }}
+                        className="w-full px-4 py-2 rounded-lg text-indigo-400 hover:text-indigo-300 font-medium transition-colors"
+                      >
+                        Sign In
+                      </motion.button>
+                    </Link>
+                    <Link to="/signup">
+                      <motion.button
+                        whileTap={{ scale: 0.95 }}
+                        className="w-full px-4 py-2 rounded-lg bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition-colors"
+                      >
+                        Sign Up
+                      </motion.button>
+                    </Link>
                   </div>
                 )}
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
-                  {user?.name}
-                </span>
               </div>
-
-              {/* Mobile Logout Button */}
-              <button
-                onClick={() => {
-                  handleLogout();
-                  setMobileMenuOpen(false);
-                }}
-                className="flex w-full items-center pl-3 pr-4 py-2.5 border-l-4 border-transparent text-base font-medium text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-              >
-                <LogOut className="h-5 w-5 mr-3" />
-                Logout
-              </button>
-            </>
-          ) : (
-            <>
-              {/* Mobile Sign In Button */}
-              <Link
-                to="/signin"
-                className="flex items-center pl-3 pr-4 py-2.5 border-l-4 border-transparent text-base font-medium text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/50"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <LogIn className="h-5 w-5 mr-3" />
-                Sign In
-              </Link>
-
-              {/* Mobile Sign Up Button */}
-              <Link
-                to="/signup"
-                className="flex items-center pl-3 pr-4 py-2.5 border-l-4 border-transparent text-base font-medium text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/50"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <UserPlus className="h-5 w-5 mr-3" />
-                Sign Up
-              </Link>
-            </>
+            </motion.div>
           )}
-
-          {/* Mobile Dark Mode Toggle */}
-          <div className="pl-3 pr-4 py-2.5 border-l-4 border-transparent">
-            <button
-              onClick={() => {
-                setDarkMode(!darkMode);
-                setMobileMenuOpen(false);
-              }}
-              className="flex items-center w-full text-gray-500 dark:text-gray-300"
-            >
-              {darkMode ? (
-                <>
-                  <Sun className="h-5 w-5 mr-3" />
-                  <span>Light Mode</span>
-                </>
-              ) : (
-                <>
-                  <Moon className="h-5 w-5 mr-3" />
-                  <span>Dark Mode</span>
-                </>
-              )}
-            </button>
-          </div>
-        </div>
+        </AnimatePresence>
       </div>
     </nav>
   );
 };
+
+const NavLink = ({ href, children }) => (
+  <Link
+    to={href}
+    className="relative text-gray-300 hover:text-white transition-colors group"
+  >
+    <span className="relative z-10">{children}</span>
+    <div className="absolute inset-x-0 bottom-0 h-0.5 bg-indigo-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
+  </Link>
+);
+
+const MobileNavLink = ({ href, children }) => (
+  <Link
+    to={href}
+    className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-800 transition-colors"
+  >
+    {children}
+  </Link>
+);
 
 export default Navigation; 

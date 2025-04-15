@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Shield, AlertTriangle, Search, Upload, BarChart3, Clock, Globe, Zap, Users, ShieldCheck, ArrowRight } from 'lucide-react';
 import Navigation from './Navigation';
+import { motion } from 'framer-motion';
 
 const HomePage = ({ darkMode, setDarkMode, isAuthenticated, user, onLogout }) => {
   const [stats, setStats] = useState({
@@ -8,6 +9,12 @@ const HomePage = ({ darkMode, setDarkMode, isAuthenticated, user, onLogout }) =>
     users: 0,
     sources: 0
   });
+
+  // Add network lines state
+  const [networkLines, setNetworkLines] = useState([]);
+
+  // Add circuit lines state
+  const [circuitLines, setCircuitLines] = useState([]);
 
   useEffect(() => {
     const targetValues = {
@@ -37,7 +44,61 @@ const HomePage = ({ darkMode, setDarkMode, isAuthenticated, user, onLogout }) =>
       });
     }, 10);
 
-    return () => clearInterval(interval);
+    // Create network lines
+    const createNetworkLine = () => {
+      const line = {
+        id: Math.random(),
+        left: `${Math.random() * 100}%`,
+        delay: Math.random() * 2,
+        duration: 3 + Math.random() * 2
+      };
+      setNetworkLines(prev => [...prev, line]);
+      
+      // Remove the line after animation
+      setTimeout(() => {
+        setNetworkLines(prev => prev.filter(l => l.id !== line.id));
+      }, line.duration * 1000);
+    };
+
+    // Create initial lines
+    for (let i = 0; i < 10; i++) {
+      setTimeout(createNetworkLine, i * 200);
+    }
+
+    // Create new lines periodically
+    const networkInterval = setInterval(createNetworkLine, 400);
+
+    // Create circuit lines
+    const createCircuitLine = () => {
+      const line = {
+        id: Math.random(),
+        top: `${Math.random() * 100}%`,
+        left: `${Math.random() * 100}%`,
+        rotate: Math.random() * 360,
+        delay: Math.random() * 2,
+        duration: 2 + Math.random() * 2
+      };
+      setCircuitLines(prev => [...prev, line]);
+      
+      // Remove the line after animation
+      setTimeout(() => {
+        setCircuitLines(prev => prev.filter(l => l.id !== line.id));
+      }, line.duration * 1000);
+    };
+
+    // Create initial lines
+    for (let i = 0; i < 8; i++) {
+      setTimeout(createCircuitLine, i * 300);
+    }
+
+    // Create new lines periodically
+    const circuitInterval = setInterval(createCircuitLine, 600);
+
+    return () => {
+      clearInterval(interval);
+      clearInterval(networkInterval);
+      clearInterval(circuitInterval);
+    };
   }, []);
 
   const features = [
@@ -95,77 +156,233 @@ const HomePage = ({ darkMode, setDarkMode, isAuthenticated, user, onLogout }) =>
   ];
 
   return (
-    <div className={`min-h-screen ${darkMode ? 'dark bg-gray-900' : 'bg-gray-50'}`}>
-      <Navigation 
-        darkMode={darkMode} 
-        setDarkMode={setDarkMode}
-        isAuthenticated={isAuthenticated}
-        user={user}
-        onLogout={onLogout}
-      />
+    <div className="min-h-screen bg-background">
+      <Navigation darkMode={darkMode} setDarkMode={setDarkMode} isAuthenticated={isAuthenticated} user={user} onLogout={onLogout} />
       
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gray-950 dark:bg-gray-950">
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-tr from-indigo-600/20 via-purple-500/20 to-pink-600/20"></div>
-          <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-900/95 to-gray-900/90 backdrop-blur-3xl"></div>
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-indigo-500/20 via-transparent to-transparent"></div>
+      <section className="relative hero-background min-h-[90vh] flex items-center justify-center overflow-hidden">
+        <div className="particle-grid"></div>
+        <div className="cyber-wave"></div>
+        <div className="network-grid"></div>
+        
+        {/* Network Lines */}
+        <div className="network-lines">
+          {networkLines.map(line => (
+            <motion.div
+              key={line.id}
+              className="network-line"
+              style={{
+                left: line.left,
+                animationDelay: `${line.delay}s`,
+                animationDuration: `${line.duration}s`
+              }}
+            />
+          ))}
         </div>
-        <div className="absolute inset-0 bg-grid-white/[0.03] bg-[length:60px_60px]"></div>
-        <div className="absolute inset-0 backdrop-blur-3xl"></div>
-        <div className="max-w-7xl mx-auto">
-          <div className="relative z-10 py-12 sm:py-16 md:py-20 lg:py-24">
-            <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-              <div className="text-center lg:text-left">
-                <div className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-indigo-500/10 text-indigo-400 dark:bg-indigo-900/50 dark:text-indigo-300 mb-4 sm:mb-5 backdrop-blur-xl">
-                  <Zap className="w-4 h-4 mr-2" />
-                  Real-time Threat Intelligence Platform
-                </div>
-                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between lg:space-x-12">
-                  <div className="lg:w-1/2 lg:flex-1">
-                    <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-tight font-extrabold text-white text-center lg:text-left">
-                      <span className="block mb-2 sm:mb-3">Advanced Threat</span>
-                      <span className="block bg-gradient-to-r from-indigo-400 to-purple-400 text-transparent bg-clip-text">
-                        Intelligence Platform
-                      </span>
-                    </h1>
-                    <p className="mt-4 sm:mt-5 text-base sm:text-lg text-gray-300 sm:max-w-xl lg:max-w-2xl mx-auto lg:mx-0 text-center lg:text-left">
-                      ThreatSense provides comprehensive threat intelligence and analysis tools to protect your organization. 
-                      Our platform aggregates data from multiple sources to give you real-time insights into emerging threats.
-                    </p>
-                    <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
-                      <div className="rounded-xl shadow-lg shadow-indigo-500/20">
-                        <a
-                          href="/dashboard"
-                          className="w-full flex items-center justify-center px-6 py-3 text-base font-medium rounded-xl text-white bg-indigo-600 hover:bg-indigo-500 transition-all duration-200 hover:scale-105 hover:shadow-xl hover:shadow-indigo-500/30"
-                        >
-                          Get Started
-                          <ArrowRight className="ml-2 w-5 h-5" />
-                        </a>
-                      </div>
-                      <div>
-                        <a
-                          href="#features"
-                          className="w-full flex items-center justify-center px-6 py-3 text-base font-medium rounded-xl text-indigo-300 bg-indigo-500/10 hover:bg-indigo-500/20 transition-all duration-200 hover:scale-105 backdrop-blur-xl"
-                        >
-                          Learn More
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-8 lg:mt-0 lg:w-1/2 lg:flex-1 flex justify-center lg:justify-end">
-                    <div className="relative w-48 h-48 sm:w-56 sm:h-56 lg:w-72 lg:h-72">
-                      <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full blur-3xl opacity-30 animate-pulse"></div>
-                      <div className="relative flex items-center justify-center transform hover:scale-105 transition-transform duration-300">
-                        <Shield className="w-full h-full text-indigo-400 dark:text-indigo-300 drop-shadow-2xl" />
-                      </div>
-                    </div>
-                  </div>
+        
+        {/* Circuit Lines */}
+        {circuitLines.map(line => (
+          <motion.div
+            key={line.id}
+            className="circuit-line"
+            style={{
+              top: line.top,
+              left: line.left,
+              transform: `rotate(${line.rotate}deg)`,
+              animationDelay: `${line.delay}s`,
+              animationDuration: `${line.duration}s`
+            }}
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0 }}
+            transition={{ duration: 0.3 }}
+          />
+        ))}
+        
+        {/* Circuit Nodes */}
+        {[...Array(20)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="circuit-node"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`
+            }}
+            animate={{
+              opacity: [0.3, 0.7, 0.3],
+              scale: [1, 1.2, 1]
+            }}
+            transition={{
+              duration: 2 + Math.random() * 2,
+              repeat: Infinity,
+              repeatType: "reverse"
+            }}
+          />
+        ))}
+        
+        {/* Floating particles */}
+        <div className="particles-container">
+          {[...Array(20)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="particle"
+              initial={{
+                x: Math.random() * window.innerWidth,
+                y: Math.random() * window.innerHeight,
+              }}
+              animate={{
+                x: Math.random() * window.innerWidth,
+                y: Math.random() * window.innerHeight,
+              }}
+              transition={{
+                duration: Math.random() * 20 + 10,
+                repeat: Infinity,
+                ease: "linear"
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Glowing orbs */}
+        <div className="glow-effect" style={{ left: '20%', top: '20%' }}></div>
+        <div className="glow-effect" style={{ right: '20%', bottom: '30%' }}></div>
+        <div className="glow-effect" style={{ left: '50%', bottom: '20%' }}></div>
+        
+        <div className="container mx-auto px-4 py-16 relative z-10">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
+            <motion.div 
+              className="flex-1 text-center lg:text-left"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+            >
+              <motion.h1 
+                className="text-4xl md:text-5xl lg:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-blue-600 text-glow"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2, duration: 0.8 }}
+              >
+                Advanced Threat Intelligence Platform
+              </motion.h1>
+              <motion.p 
+                className="mt-6 text-lg md:text-xl text-gray-300 max-w-2xl mx-auto lg:mx-0"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4, duration: 0.8 }}
+              >
+                ThreatSense provides comprehensive threat intelligence and analysis tools to help security teams identify, analyze, and respond to emerging threats in real-time.
+              </motion.p>
+              <motion.div 
+                className="mt-8 flex flex-wrap gap-4 justify-center lg:justify-start"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.6, duration: 0.8 }}
+              >
+                <motion.button 
+                  className="px-8 py-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold transition-all transform hover:scale-105"
+                  whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(99, 102, 241, 0.5)" }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  Get Started
+                </motion.button>
+                <motion.button 
+                  className="px-8 py-3 rounded-lg border border-indigo-600 text-indigo-600 hover:bg-indigo-600/10 font-semibold transition-all transform hover:scale-105"
+                  whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(99, 102, 241, 0.3)" }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  Learn More
+                </motion.button>
+              </motion.div>
+            </motion.div>
+
+            <motion.div 
+              className="flex-1 relative"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.4, duration: 0.8 }}
+            >
+              <div className="floating relative w-full max-w-2xl mx-auto mt-24 lg:mt-8">
+                <div className="shield-container">
+                  <div className="shield-glow absolute inset-0"></div>
+                  <div className="shield-ring absolute inset-[-10%] rounded-full border border-indigo-500/20"></div>
+                  <div className="shield-ring-outer absolute inset-[-20%] rounded-full border border-indigo-500/10"></div>
+                  <motion.div
+                    className="shield-pulse absolute inset-[-5%] rounded-full bg-indigo-500/5"
+                    animate={{
+                      scale: [1, 1.2, 1],
+                      opacity: [0.3, 0.5, 0.3],
+                    }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  ></motion.div>
+                  <motion.div 
+                    animate={{
+                      rotateZ: 360,
+                    }}
+                    transition={{
+                      duration: 20,
+                      repeat: Infinity,
+                      ease: "linear",
+                    }}
+                    className="shield-particles absolute inset-[-30%] opacity-50"
+                  >
+                    {[...Array(8)].map((_, i) => (
+                      <div
+                        key={i}
+                        className="absolute w-2 h-2 bg-indigo-500/30 rounded-full"
+                        style={{
+                          left: '50%',
+                          top: '50%',
+                          transform: `rotate(${i * 45}deg) translateY(-150%)`,
+                        }}
+                      />
+                    ))}
+                  </motion.div>
+                  <Shield className="w-full h-auto text-indigo-500 opacity-90 relative z-10" />
+                  <motion.div 
+                    className="absolute inset-0 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 blur-3xl -z-10"
+                    animate={{
+                      scale: [1, 1.2, 1],
+                      opacity: [0.5, 0.8, 0.5],
+                    }}
+                    transition={{
+                      duration: 4,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  ></motion.div>
                 </div>
               </div>
-            </main>
+            </motion.div>
           </div>
         </div>
+      </section>
+
+      {/* Animated Stats */}
+      <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">
+        <dl className="grid grid-cols-1 gap-x-8 gap-y-16 text-center lg:grid-cols-3">
+          {[
+            { label: 'IOCs Analyzed', value: stats.threats },
+            { label: 'Active Users', value: stats.users },
+            { label: 'Threat Sources', value: stats.sources }
+          ].map((stat, index) => (
+            <motion.div
+              key={stat.label}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 * (index + 4) }}
+              className="mx-auto flex max-w-xs flex-col gap-y-4"
+            >
+              <dt className="text-base leading-7 text-gray-400">{stat.label}</dt>
+              <dd className="order-first text-3xl font-semibold tracking-tight text-white sm:text-5xl">
+                {stat.value.toLocaleString()}+
+              </dd>
+            </motion.div>
+          ))}
+        </dl>
       </div>
 
       {/* Live Threat Feed */}
@@ -231,46 +448,6 @@ const HomePage = ({ darkMode, setDarkMode, isAuthenticated, user, onLogout }) =>
               ))}
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* Stats Section */}
-      <div className="bg-indigo-600 dark:bg-indigo-700">
-        <div className="max-w-7xl mx-auto py-12 px-4 sm:py-16 sm:px-6 lg:px-8 lg:py-20">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl font-extrabold text-white sm:text-4xl">
-              Trusted by security teams worldwide
-            </h2>
-            <p className="mt-3 text-xl text-indigo-200 sm:mt-4">
-              Join thousands of organizations using ThreatSense to protect their assets.
-            </p>
-          </div>
-          <dl className="mt-10 text-center sm:max-w-3xl sm:mx-auto sm:grid sm:grid-cols-3 sm:gap-8">
-            <div className="flex flex-col">
-              <dt className="order-2 mt-2 text-lg leading-6 font-medium text-indigo-200">
-                IOCs Analyzed
-              </dt>
-              <dd className="order-1 text-5xl font-extrabold text-white">
-                {stats.threats.toLocaleString()}+
-              </dd>
-            </div>
-            <div className="flex flex-col mt-10 sm:mt-0">
-              <dt className="order-2 mt-2 text-lg leading-6 font-medium text-indigo-200">
-                Active Users
-              </dt>
-              <dd className="order-1 text-5xl font-extrabold text-white">
-                {stats.users.toLocaleString()}+
-              </dd>
-            </div>
-            <div className="flex flex-col mt-10 sm:mt-0">
-              <dt className="order-2 mt-2 text-lg leading-6 font-medium text-indigo-200">
-                Threat Sources
-              </dt>
-              <dd className="order-1 text-5xl font-extrabold text-white">
-                {stats.sources}+
-              </dd>
-            </div>
-          </dl>
         </div>
       </div>
 
